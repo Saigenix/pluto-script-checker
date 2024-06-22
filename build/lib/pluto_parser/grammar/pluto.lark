@@ -1,0 +1,213 @@
+ABSOLUTE_TIME_CONSTANT : (YEAR "-" MONTH "-" DAY_OF_MONTH "T" HOUR ":" MINUTE ":" SECOND "." FRACTION_OF_SECOND ["Z"] )
+                       | (YEAR "-" DAY "T" HOUR ":" MINUTE ":" SECOND "." FRACTION_OF_SECOND ["Z"] )
+activity_call : activity_reference [("with arguments" arguments "end with")
+              | ("with value set" predefined_value_set_reference "end with")] ["with directives" directives "end with"]
+activity_reference : object_reference
+ACTIVITY_STATEMENT : IDENTIFIER
+ADDITION_OPERATOR : "+" | "-"
+ARGUMENT_NAME : IDENTIFIER
+argument_reference : object_reference
+arguments : ( simple_argument  | record_argument | array_argument ) ("," ( simple_argument | record_argument     | array_argument ))*
+array_argument : [ ARGUMENT_NAME ] "array" (( simple_argument ("," simple_argument )*)
+               | ( record_argument ("," record_argument )*)) "end array"
+assignment_statement : variable_reference ":=" expression
+!boolean_constant.1 : "TRUE" | "FALSE"
+!boolean_operator : "AND" | "OR" | "XOR"
+case_statement : "in case" expression "is" case_tag ":" (step_statement ";")+ ("or is" case_tag ":" (step_statement ";")+)* ["otherwise" ":" (step_statement ";")+] "end case"
+case_tag : comparative_expression (boolean_operator comparative_expression )*
+CHARACTERS : ( DIGIT | LETTER | " " | "!" | "\\\"" | "#" | "$" | "%" | "&" | "'" | "("
+           | ")" | "*" | "+" | "," | "-" | "." | "/" | ":" | ";" | "<" | "="| ">"
+                                                        | "?" | "@"| "[" | "\\" | "]" | "^" | "_" | "`" | "{" | "|" | "}" | "~" )+
+comparative_expression : (relational_operator term)
+                       | ("between" term "and" term)
+                       | ("within" constant [engineering_units | "%"] "of" term )
+                       | ("in (" term ("," term)+ ")")
+confirmation_body : "confirmation" ( ( "if" expression ) | wait_statement ) ("then" ( ( "if" expression) | wait_statement ) )* "end confirmation"
+CONFIRMATION_STATUS : "confirmed" | "not confirmed" | "aborted"
+constant : boolean_constant
+         | ENUMERATED_CONSTANT
+         | integer_constant
+         | real_constant
+         | STRING_CONSTANT
+         | ABSOLUTE_TIME_CONSTANT
+         | relative_time_constant
+!continuation_action : "resume"
+                    | "abort"
+                    | "restart" [ timeout  | ("max times" expression [raise_event] ) ]
+                    | "ask user"
+                    | raise_event
+                    | "continue"
+                    | "terminate"
+continuation_test : "in case" (CONFIRMATION_STATUS ":" continuation_action ";")+ "end case"
+DAY : DIGIT ~ 3
+DAY_OF_MONTH : DIGIT ~ 2
+DAYS : (DIGIT)+
+description : "described by" STRING_CONSTANT
+DIGIT : "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+DIRECTIVE_NAME : IDENTIFIER
+directives : [DIRECTIVE_NAME ":="] expression ("," [DIRECTIVE_NAME ":="] expression )*
+ENUMERATED_CONSTANT : "\"" CHARACTERS "\""
+enumerated_set_declaration : "enumerated" SET_NAME "(" ENUMERATED_CONSTANT ("," ENUMERATED_CONSTANT)* ")" [description]
+enumerated_set_reference : SET_NAME ["of" object_reference]
+event_declaration : "event" EVENT_NAME [description]
+EVENT_NAME : IDENTIFIER
+event_reference : object_reference
+expression : relational_expression [boolean_operator expression]
+factor : simple_factor ["**" factor]
+flow_control_statement : if_statement
+                       | case_statement
+                       | repeat_statement
+                       | while_statement
+                       | for_statement
+for_statement : "for" variable_reference ":=" expression "to" expression ["by" expression] "do" (step_statement ";")+ "end for"
+FRACTION_OF_SECOND : (DIGIT)+
+!function : ( STANDARD_FUNCTION_NAME | NONSTANDARD_FUNCTION_NAME ) "(" [expression ("," expression)*] ")"
+HEXADECIMAL_CONSTANT : HEXADECIMAL_SYMBOL (HEXADECIMAL_DIGIT)+
+HEXADECIMAL_DIGIT : DIGIT | "A" | "B" | "C" | "D" | "E" | "F"
+HEXADECIMAL_SYMBOL : "0x"
+HOUR : DIGIT ~ 2
+HOURS : (DIGIT)+
+IDENTIFIER : IDENTIFIER_FIRST_WORD (IDENTIFIER_SUBSEQUENT_WORD )*
+IDENTIFIER_FIRST_WORD : LETTER (LETTER | DIGIT | "_")*
+IDENTIFIER_SUBSEQUENT_WORD : (LETTER | DIGIT )+
+!if_statement : "if" expression "then" (step_statement ";")+ ["else" (step_statement ";")+] "end if"
+inform_user_statement : "inform user" expression ("," expression)*
+initiate_activity_statement : "initiate" activity_call ["refer by" ACTIVITY_STATEMENT]
+initiate_and_confirm_activity_statement : "initiate and confirm" activity_call ["refer by" ACTIVITY_STATEMENT] [continuation_test]
+initiate_and_confirm_step_statement : "initiate and confirm step" STEP_NAME step_definition "end step" [continuation_test]
+initiate_and_confirm_step_statement_watchdog: "initiate and confirm step" STEP_NAME step_definition "end step" [continuation_test]
+initiate_in_parallel_statement : "in parallel" ( ["until all complete"] | "until one completes" ) (  initiate_and_confirm_step_statement
+                               | initiate_and_confirm_activity_statement ) ";" ( (  initiate_and_confirm_step_statement
+                               | initiate_and_confirm_activity_statement ) ";")+ "end parallel"
+integer_constant : ( [ SIGN ] (DIGIT)+ [engineering_units] )
+                 | HEXADECIMAL_CONSTANT
+LETTER : "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j"| "k" | "l" | "m" | "n"
+       | "o" | "p" | "q" | "r" | "s"| "t" | "u" | "v" | "w" | "x" | "y" | "z" | "A"
+       | "B"| "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K"| "L" | "M"
+       | "N" | "O" | "P" | "Q" | "R" | "S" | "T"| "U" | "V" | "W" | "X" | "Y"
+       | "Z"
+log_statement.1 : "log" expression ("," expression)*
+MINUTE : DIGIT ~ 2
+MINUTES : (DIGIT)+
+MONTH : DIGIT ~ 2
+MULTIPLICATION_OPERATOR : "*" | "/"
+NEGATION_BOOLEAN_OPERATOR : "NOT"
+NONSTANDARD_FUNCTION_NAME : IDENTIFIER
+NONSTANDARD_OBJECT_OPERATION_NAME : IDENTIFIER
+nonstandard_object_property_name.1 : IDENTIFIER
+OBJECT_NAME : IDENTIFIER
+object_operation : ("set" object_property)
+                 |NONSTANDARD_OBJECT_OPERATION_NAME
+object_operation_request_statement : object_operation [["of"] object_reference] [ "with" [ARGUMENT_NAME ":="] expression ("," [ARGUMENT_NAME ":="] expression)* "end with"]
+object_property : ( standard_object_property_name
+                | nonstandard_object_property_name) ["of" object_property]
+object_property_request.1 : [["get"] object_property "of"] object_reference [ "with" [ARGUMENT_NAME ":="] expression ("," [ARGUMENT_NAME ":="] expression)* "end with"]
+object_reference : [ OBJECT_TYPE ] OBJECT_NAME ("of" object_reference)*
+OBJECT_TYPE : "variable" | "predefined value set" | "activity statement"
+            | "step" | "argument" | "system element"    | "reporting data"
+            | "parameter" | "record" | "array" | "activity" | "event"
+preconditions_body : "preconditions" ( ( "if" expression ) | wait_statement ) ("then" ( ( "if" expression ) | wait_statement ) )* "end preconditions"
+!predefined_type : "Boolean"
+                | enumerated_set_reference
+                | "signed integer"
+                | "unsigned integer"
+                | "real"
+                | "string"
+                | "absolute time"
+                | "relative time"
+                | property_value_set
+                | property_data_type
+predefined_value_set_reference : object_reference
+procedure_declaration_body : "declare" event_declaration ("," event_declaration)* "end declare"
+procedure_definition : "procedure" [ procedure_declaration_body ] [ preconditions_body ] procedure_main_body [ watchdog_body ] [ confirmation_body ] "end procedure"
+procedure_main_body : ("main" (procedure_statement ";")+ "end main")
+                    | (procedure_statement ";")+
+procedure_statement : set_procedure_context_statement
+                    | initiate_in_parallel_statement
+                    | initiate_and_confirm_step_statement
+                    | initiate_and_confirm_activity_statement
+                    | initiate_activity_statement
+                    | inform_user_statement
+                    | log_statement
+product : factor [MULTIPLICATION_OPERATOR product]
+property_data_type : "same as" object_property "of" ( object_reference | ("current" ("system element" | "reporting data" | "parameter" | "activity" | "event")))
+property_value_set : (object_property "of" (object_reference | ( ["current"] ("system element" | "reporting data" | "parameter" | "activity" | "event") ["of" (( object_property constant)
+                   | object_reference)] )))
+                   |(( "system element reference" | "reporting data reference" | "parameter reference" | "activity reference" | "event reference") "of" object_property constant)
+raise_event : "raise event" EVENT_NAME
+!real_constant : [ SIGN ] (DIGIT)+ [ "." (DIGIT)+ ] ["e" [ SIGN ] (DIGIT)+] [engineering_units]
+record_argument : [ARGUMENT_NAME] "record" arguments "end record"
+relational_expression : term [comparative_expression ]
+!relational_operator : "=" | "!=" | "<" | ">" | "<=" | ">="
+!relative_time_constant : ( [SIGN] (DAYS "d" )
+                       | ( [DAYS "d"] ( ( HOURS "h" )
+                       | ( [HOURS "h"] ( ( MINUTES "min" )
+                       | ( [MINUTES "min"] SECONDS ["." FRACTION_OF_SECOND] "s" ) ) ) ) ) )
+                       | ([SIGN] DAYS ":" HOUR ":" MINUTE ":" SECOND ":" FRACTION_OF_SECOND)
+repeat_statement : "repeat" (step_statement ";")+ "until" expression [ timeout ]
+REPORTING_DATA_NAME : IDENTIFIER
+reporting_data_reference : object_reference
+save_context : "save context" "refer to" reporting_data_reference "by" REPORTING_DATA_NAME ("," "to" reporting_data_reference "by" REPORTING_DATA_NAME)*
+save_context_statement : save_context
+SECOND : DIGIT ~ 2
+SECONDS : (DIGIT)+
+SET_NAME : IDENTIFIER
+set_procedure_context_statement : "in the context of" object_reference "do" (procedure_statement ";")+ "end context"
+set_step_context_statement : "in the context of" object_reference "do" (step_statement ";")+ "end context"
+SIGN : "+" | "-"
+simple_argument : [ARGUMENT_NAME ":="] expression
+                | ("activity" activity_call)
+                | (("parameter" | "reporting data") reporting_data_reference)
+                | ("system element" system_element_reference)
+                | ("event" event_reference)
+simple_factor : constant
+              | argument_reference
+              | variable_reference
+              | object_property_request
+              | ("ask user" "(" expression ["default" expression] ")" ["expect" predefined_type] )
+              | ("(" expression ")")
+              | function
+              | (SIGN simple_factor)
+              | (NEGATION_BOOLEAN_OPERATOR simple_factor)
+STANDARD_FUNCTION_NAME : IDENTIFIER
+standard_object_property_name.1 : IDENTIFIER
+step_declaration_body : "declare" (enumerated_set_declaration
+                      | variable_declaration | event_declaration) ("," (enumerated_set_declaration
+                      | variable_declaration | event_declaration))* "end declare"
+step_definition : [ step_declaration_body ] [ preconditions_body ] step_main_body [ watchdog_body ] [ confirmation_body ]
+step_main_body : ("main" (step_statement ";")+ "end main")
+               | (step_statement ";")+
+STEP_NAME : IDENTIFIER
+step_statement : set_step_context_statement
+               | assignment_statement
+               | flow_control_statement
+               | wait_statement
+               | object_operation_request_statement
+               | save_context_statement
+               | initiate_in_parallel_statement
+               | initiate_and_confirm_step_statement
+               | initiate_and_confirm_activity_statement
+               | initiate_activity_statement
+               | inform_user_statement
+               | log_statement
+STRING_CONSTANT : "\"" CHARACTERS "\""
+system_element_reference : object_reference
+term : product [ADDITION_OPERATOR term]
+timeout : "timeout" expression [raise_event]
+variable_declaration : "variable" VARIABLE_NAME "of type" predefined_type ["with units" engineering_units] [description]
+VARIABLE_NAME : IDENTIFIER
+variable_reference : object_reference
+wait_statement : (wait_for_statement | wait_for_event_statement | wait_until_statement)
+wait_for_statement : "wait for" expression [ save_context ] [ timeout ]
+wait_for_event_statement.2 : "wait for event" event_reference [ save_context ] [ timeout ]
+wait_until_statement : "wait until" expression [ save_context ] [ timeout ]
+watchdog_body : "watchdog" initiate_and_confirm_step_statement_watchdog ";" ( ["watchdog"] initiate_and_confirm_step_statement_watchdog ";")* "end watchdog"
+while_statement : "while" expression [ timeout ] "do" (step_statement ";")+ "end while"
+YEAR : DIGIT ~ 4
+%import .engineering_units.engineering_units
+%import common.WS
+%ignore WS
+COMMENT  : ("/*" /([^\*])|(\* [^\/])/* "*/")
+         | ("//" /[^\n]*/ NEWLINE)
+NEWLINE : "\n"
+%ignore COMMENT

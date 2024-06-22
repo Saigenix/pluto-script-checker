@@ -1,0 +1,39 @@
+
+? Engineering Units ? =
+    ("[",Unit Reference, "]")
+    | Unit Reference;
+Unit Reference =
+    Unit Product,  ["/", Unit Factor];
+Unit Product =
+    [Unit Product, "."], Unit Factor;
+Unit Factor =
+    Unit Simple Factor (Unit Simple Factor , ["^", Unit Exponent])
+    | ("(",Unit Reference, ")", ["^", Unit Exponent]);
+Unit Simple Factor  =
+    (   [Decimal Multiple Prefix], Multiple Only Simple Unit )
+    | ( [Decimal Submultiple Prefix], Submultiple Only Simple Unit )
+    | ( [Decimal Prefix], Multiple And Submultiple Simple Unit )
+    | ( [Binary Prefix], ("B" | "bit"))
+    | "AU" | "pc" | "u" |  "min" | "h" | "d" | "dB";
+Unit Exponent =
+    (["-"], Unsigned Integer)
+    | ("(", ["-"], Unsigned Integer, "/", Unsigned Integer, ")");
+Multiple And Submultiple Simple Unit =
+    "m" | "g" | "s" | "A" | "K" | "mol" | "cd" |  "Hz" | "N"
+    | "Pa" | "bar" | "J" | "eV" | "W" | "C" | "V" | "F" | "Ohm" | "S"
+    | "Wb" | "T" | "H" | "lm" | "lx" | "Bq" | "Gy" | "Sv" | "bit";
+Multiple Only Simple Unit =
+    "t" | "r" | "B" | "Bd";
+Submultiple Only Simple Unit =
+    "L" | "degC" | "rad" | "deg" | "arcmin" | "arcsec" | "sr" | "Np";
+Decimal Prefix =
+    Decimal Multiple Prefix
+    | Decimal Submultiple Prefix;
+Decimal Multiple Prefix =
+    "Y" | "Z" | "E" | "P" | "T" | "G" | "M"  | "k" | "h" | "da";
+Decimal Submultiple Prefix =
+    "d" | "c" | "m" | "u" | "n" | "p" | "f" | "a" | "z" | "y";
+Binary Prefix =
+    "Ei" | "Pi" | "Ti" | "Gi" | "Mi" | "Ki";
+Unsigned Integer =
+    {Digit }-;

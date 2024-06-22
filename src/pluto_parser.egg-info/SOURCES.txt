@@ -1,5 +1,3 @@
-LICENSE.txt
-README.md
 pyproject.toml
 src/pluto_parser/__init__.py
 src/pluto_parser/parser.py
@@ -16,9 +14,3 @@ src/pluto_parser/grammar/engineering_units.lark
 src/pluto_parser/grammar/pluto.ebnf
 src/pluto_parser/grammar/pluto.lark
 src/pluto_parser/grammar/tools.py
-tests/test_PlutoTransformer.py
-tests/test_UnitTransformer.py
-tests/test_ecss.py
-tests/test_examples.py
-tests/test_grammar.py
-tests/test_grammar_tools.py
