@@ -1,0 +1,3 @@
+[console_scripts]
+pluto_parse = pluto_parser:pluto_parse_file
+pluto_tree = pluto_parser:pluto_tree

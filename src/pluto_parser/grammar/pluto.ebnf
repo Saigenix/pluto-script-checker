@@ -1,0 +1,411 @@
+Absolute Time Constant =
+    (Year, "-", Month, "-", Day Of Month,
+        "T", Hour, ":", Minute, ":", Second,
+             ".", Fraction Of Second, ["Z"] )
+    | (Year, "-", Day,
+        "T", Hour, ":", Minute, ":", Second, ".",
+        Fraction Of Second, ["Z"] );
+Activity Call =
+    Activity Reference,
+        [("with arguments", Arguments, "end with")
+        | ("with value set", Predefined Value Set Reference , "end with")],
+        ["with directives", Directives, "end with"];
+Activity Reference =
+     Object Reference;
+Activity Statement =
+    Identifier;
+Addition Operator =
+
+
+    "+" | "-";
+Argument Name =
+    Identifier;
+Argument Reference =
+    Object Reference;
+Arguments =
+    ( Simple Argument  | Record Argument | Array Argument ),
+    {",",  ( Simple Argument | Record Argument     | Array Argument )};
+Array Argument =
+    [ Argument Name ], "array",
+     (( Simple Argument, {",", Simple Argument })
+     | ( Record Argument, {",", Record Argument })),
+     "end array";
+Assignment Statement =
+    Variable Reference, ":=", Expression;
+Boolean Constant =
+    "TRUE" | "FALSE";
+Boolean Operator =
+    "AND" | "OR" | "XOR";
+Case Statement =
+    "in case", Expression, "is", Case Tag, ":", {Step Statement, ";"}-
+    {"or is", Case Tag, ":", {Step Statement, ";"}-},
+    ["otherwise", ":", {Step Statement, ";"}-],
+    "end case";
+Case Tag =
+    Comparative Expression ,
+    {Boolean Operator, Comparative Expression };
+Characters =
+    { Digit | Letter | " " | "!" | "\"" | "#" | "$" | "%" | "&" | "'" | "("
+    | ")" | "*" | "+" | "," | "-" | "." | "/" | ":" | ";" | "<" | "="| ">"
+    | "?" | "@"| "[" | "\\" | "]" | "^" | "_" | "`" | "{" | "|" | "}" | "~" }-;
+Comparative Expression =
+    (Relational Operator, Term)
+     | ("between", Term, "and", Term)
+     | ("within", Constant , [? Engineering Units ? | "%"], "of", Term )
+     | ("in (", Term,{",", Term}-, ")");
+Confirmation Body =
+    "confirmation", ( ( "if", Expression ) | Wait Statement ),
+    {"then", ( ( "if", Expression) | Wait Statement ) },
+    "end confirmation";
+Confirmation Status =
+    "confirmed" | "not confirmed" | "aborted";
+Constant =
+    Boolean Constant
+    | Enumerated Constant
+    | Integer Constant
+    | Real Constant
+    | String Constant
+    | Absolute Time Constant
+    | Relative Time Constant;
+Continuation Action =
+    "resume"
+    | "abort"
+    | "restart",
+      [ Timeout  | ("max times", Expression, [Raise Event] ) ]
+    | "ask user"
+    | Raise Event
+    | "continue"
+    | "terminate";
+Continuation Test =
+    "in case",
+    {Confirmation Status, ":", Continuation Action, ";"}-,
+    "end case";
+Day =
+    3 * Digit;
+Day Of Month =
+    2 * Digit;
+Days =
+    {Digit}-;
+Description =
+    "described by", String Constant;
+Digit =
+    "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
+Directive Name =
+    Identifier;
+Directives =
+     [Directive Name, ":="], Expression,
+    {",", [Directive Name, ":="], Expression };
+Enumerated Constant =
+    "\"", Characters, "\"";
+Enumerated Set Declaration =
+    "enumerated", Set Name,
+    "(", Enumerated Constant,
+    {",", Enumerated Constant}, ")", [Description];
+Enumerated Set Reference =
+    Set Name, ["of", Object Reference];
+Event Declaration =
+    "event", Event Name, [Description];
+Event Name =
+    Identifier;
+Event Reference =
+    Object Reference;
+Expression =
+    Relational Expression, [Boolean Operator, Expression];
+Factor =
+    Simple Factor, ["**", Factor];
+Flow Control Statement =
+    If Statement
+    | Case Statement
+    | Repeat Statement
+    | While Statement
+    | For Statement;
+For Statement =
+    "for", Variable Reference, ":=", Expression, "to", Expression,
+    ["by", Expression],
+    "do", {Step Statement, ";"}-, "end for";
+Fraction Of Second =
+    {Digit}-;
+Function =
+    ( Standard Function Name | Nonstandard Function Name ),
+    "(", [Expression, {",", Expression}], ")";
+Hexadecimal Constant =
+    Hexadecimal Symbol, {Hexadecimal Digit}-;
+Hexadecimal Digit =
+    Digit | "A" | "B" | "C" | "D" | "E" | "F";
+Hexadecimal Symbol =
+    "0x";
+Hour =
+    2 * Digit;
+Hours =
+    {Digit}-;
+Identifier =
+    Identifier First Word, {Identifier Subsequent Word };
+Identifier First Word =
+    Letter, {Letter | Digit };
+Identifier Subsequent Word =
+    {Letter | Digit }-;
+If Statement =
+    "if", Expression,
+    "then", {Step Statement, ";"}-,
+    ["else", {Step Statement, ";"}-],
+    "end if";
+Inform User Statement =
+    "inform user", Expression, {",", Expression};
+Initiate Activity Statement =
+    "initiate", Activity Call, ["refer by", Activity Statement];
+Initiate And Confirm Activity Statement =
+    "initiate and confirm", Activity Call,
+    ["refer by", Activity Statement],
+    [Continuation Test];
+Initiate And Confirm Step Statement =
+    "initiate and confirm step", Step Name,
+    Step Definition, "end step",
+    [Continuation Test];
+Initiate In Parallel Statement =
+    "in parallel", ( ["until all complete"] | "until one completes" ),
+    (  Initiate And Confirm Step Statement
+      | Initiate And Confirm Activity Statement ), ";",
+    { (  Initiate And Confirm Step Statement
+        | Initiate And Confirm Activity Statement ), ";"}-,
+    "end parallel";
+Integer Constant =
+    ( [ Sign ], {Digit}-, [? Engineering Units ?] )
+    | Hexadecimal Constant;
+Letter =
+    "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j"| "k" | "l" | "m" | "n"
+    | "o" | "p" | "q" | "r" | "s"| "t" | "u" | "v" | "w" | "x" | "y" | "z" | "A"
+    | "B"| "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K"| "L" | "M"
+    | "N" | "O" | "P" | "Q" | "R" | "S" | "T"| "U" | "V" | "W" | "X" | "Y"
+    | "Z";
+Log Statement =
+    "log", Expression, {",", Expression};
+Minute =
+    2 * Digit;
+Minutes =
+    {Digit}-;
+Month =
+    2 * Digit;
+Multiplication Operator =
+    "*" | "/";
+Negation Boolean Operator =
+    "NOT";
+Nonstandard Function Name = Identifier;
+Nonstandard Object Operation Name = Identifier;
+Nonstandard Object Property Name = Identifier;
+Object Name =
+    Identifier;
+Object Operation =
+    ("set", Object Property)
+    |Nonstandard Object Operation Name;
+Object Operation Request Statement =
+    Object Operation, [["of"], Object Reference],
+    [ "with", [Argument Name, ":="], Expression,
+    {",", [Argument Name, ":="], Expression},
+    "end with"];
+Object Property =
+    ( Standard Object Property Name
+    | Nonstandard Object Property Name), ["of", Object Property];
+Object Property Request =
+    [["get"], Object Property, "of"], Object Reference,
+    [ "with", [Argument Name, ":="], Expression,
+    {",", [Argument Name, ":="], Expression},
+    "end with"];
+Object Reference =
+    [ Object Type ], Object Name, {"of", Object Reference};
+Object Type =
+    "variable" | "predefined value set" | "activity statement"
+    | "step" | "argument" | "system element"    | "reporting data"
+    | "parameter" | "record" | "array" | "activity" | "event";
+Preconditions Body =
+    "preconditions",
+    ( ( "if", Expression ) | Wait Statement ),
+      {"then",
+        (( "if", Expression ) | Wait Statement )},
+    "end preconditions";
+Predefined Type =
+      "Boolean"
+    | Enumerated Set Reference
+    | "signed integer"
+    | "unsigned integer"
+    | "real"
+    | "string"
+    | "absolute time"
+    | "relative time"
+    | Property Value Set
+    | Property Data Type;
+Predefined Value Set Reference =
+     Object Reference;
+Procedure Declaration Body =
+    "declare",
+    Event Declaration, {",", Event Declaration},
+    "end declare";
+Procedure Definition =
+    "procedure",
+    [ Procedure Declaration Body ],
+    [ Preconditions Body ],
+    Procedure Main Body,
+    [ Watchdog Body ],
+    [ Confirmation Body ],
+    "end procedure";
+Procedure Main Body =
+    ("main", {Procedure Statement, ";"}-, "end main")
+    | {Procedure Statement, ";"}-;
+Procedure Statement =
+      Set Procedure Context Statement
+    | Initiate In Parallel Statement
+    | Initiate And Confirm Step Statement
+    | Initiate And Confirm Activity Statement
+    | Initiate Activity Statement
+    | Inform User Statement
+    | Log Statement;
+Product =
+    Factor, [Multiplication Operator, Product];
+Property Data Type =
+    "same as", Object Property, "of",
+    ( Object Reference | ("current", ("system element" |
+    "reporting data" | "parameter" | "activity" | "event")));
+Property Value Set =
+    (Object Property, "of",
+    (Object Reference | ( ["current"], ("system element" |
+    "reporting data" | "parameter" | "activity" | "event"), ["of",
+    (( Object Property, Constant)
+    | Object Reference)] )))
+    |(( "system element reference" |
+    "reporting data reference" | "parameter reference" |
+    "activity reference" | "event reference"),
+    "of", Object Property, Constant);
+Raise Event =
+    "raise event", Event Name;
+Real Constant =
+    [ Sign ], {Digit}-, [ ".", {Digit}- ],
+    ["e", [ Sign ], {Digit}-],
+    [? Engineering Units ?];
+Record Argument =
+    [Argument Name], "record", Arguments, "end record";
+Relational Expression =
+    Term, [Comparative Expression ];
+Relational Operator =
+    "=" | "!=" | "<" | ">" | "<=" | ">=";
+Relative Time Constant =
+    ( [Sign], (Days, "d" )
+    | ( [Days, "d"],
+        ( ( Hours, "h" )
+        | ( [Hours, "h"],
+            ( ( Minutes, "min" )
+            | ( [Minutes, "min"], Seconds,
+                [".", Fraction Of Second], "s" ) ) ) ) ) )
+    | ([Sign], Days, ":", Hour, ":", Minute, ":", Second,
+     ":", Fraction Of Second);
+Repeat Statement =
+    "repeat",
+    {Step Statement, ";"}-,
+    "until", Expression, [ Timeout ];
+Reporting Data Name =
+    Identifier;
+Reporting Data Reference =
+    Object Reference;
+Save Context =
+    "save context",
+    "refer to", Reporting Data Reference,
+     "by", Reporting Data Name,
+     {",",  "to", Reporting Data Reference,
+     "by", Reporting Data Name};
+Save Context Statement =
+    Save Context;
+Second =
+    2 * Digit;
+Seconds =
+    {Digit}-;
+Set Name =
+    Identifier;
+Set Procedure Context Statement =
+    "in the context of", Object Reference, "do",
+     {Procedure Statement, ";"}-,
+     "end context";
+Set Step Context Statement =
+    "in the context of", Object Reference, "do",
+     {Step Statement, ";"}-,
+     "end context";
+Sign =
+    "+" | "-";
+Simple Argument =
+     [Argument Name, ":="],
+          Expression
+         | ("activity", Activity Call)
+         | (("parameter" | "reporting data"), Reporting Data Reference)
+         | ("system element", System Element Reference)
+         | ("event", Event Reference);
+Simple Factor =
+      Constant
+    | Argument Reference
+    | Variable Reference
+    | Object Property Request
+    | ("ask user", "(", Expression, ["default", Expression], ")",
+          ["expect", Predefined Type] )
+    | ("(", Expression, ")")
+    | Function
+    | (Sign, Simple Factor)
+    | (Negation Boolean Operator, Simple Factor);
+Standard Function Name = Identifier;
+Standard Object Property Name = Identifier;
+Step Declaration Body =
+    "declare",
+    (Enumerated Set Declaration
+    | Variable Declaration | Event Declaration),
+    {",", (Enumerated Set Declaration
+    | Variable Declaration | Event Declaration)},
+    "end declare";
+Step Definition =
+    [ Step Declaration Body ],
+     [ Preconditions Body ],
+      Step Main Body,
+    [ Watchdog Body ],
+    [ Confirmation Body ];
+Step Main Body =
+    ("main", {Step Statement, ";"}-, "end main")
+    | {Step Statement, ";"}-;
+Step Name =
+    Identifier;
+Step Statement =
+      Set Step Context Statement
+    | Assignment Statement
+    | Flow Control Statement
+    | Wait Statement
+    | Object Operation Request Statement
+    | Save Context Statement
+    | Initiate In Parallel Statement
+    | Initiate And Confirm Step Statement
+    | Initiate And Confirm Activity Statement
+    | Initiate Activity Statement
+    | Inform User Statement
+    | Log Statement;
+String Constant =
+    "\"", Characters, "\"";
+System Element Reference =
+    Object Reference;
+Term =
+    Product, [Addition Operator, Term];
+Timeout =
+    "timeout", Expression, [Raise Event];
+Variable Declaration =
+    "variable", Variable Name, "of type", Predefined Type,
+    ["with units", ? Engineering Units ?], [Description];
+Variable Name =
+    Identifier;
+Variable Reference =
+    Object Reference;
+Wait Statement =
+    (( "wait until", Expression )
+      | ( "wait for", (("event",  Event Reference) | Expression))),
+    [ Save Context ],
+    [ Timeout ];
+Watchdog Body =
+    "watchdog", Initiate And Confirm Step Statement, ";",
+    { ["watchdog"], Initiate And Confirm Step Statement, ";"},
+    "end watchdog";
+While Statement =
+    "while", Expression, [ Timeout ],
+    "do", {Step Statement, ";"}-,
+    "end while";
+Year =
+    4 * Digit;

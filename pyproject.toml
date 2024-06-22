@@ -1,0 +1,30 @@
+[project]
+name = "pluto-parser"
+description = "Parse PLUTO scripts to Python"
+version = "1.0.0"
+authors = [
+    { name = "LibreCube", email = "info@librecube.org" },
+]
+dependencies = [
+    "lark-parser",
+]
+
+[project.license]
+text = "MIT"
+
+[project.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+[project.scripts]
+pluto_parse = "pluto_parser:pluto_parse_file"
+pluto_tree = "pluto_parser:pluto_tree"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+"*" = ["*.ebnf", "*.lark"]

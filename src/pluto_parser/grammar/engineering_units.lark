@@ -1,0 +1,26 @@
+
+engineering_units : ("[" unit_reference "]")
+                  | unit_reference
+!?unit_reference : unit_product ["/" unit_factor]
+!?unit_product : [unit_product "."] unit_factor
+!?unit_factor : (unit_simple_factor ["^" unit_exponent])
+              | ("(" unit_reference ")" ["^" unit_exponent])
+!?unit_simple_factor : (   [DECIMAL_MULTIPLE_PREFIX] MULTIPLE_ONLY_SIMPLE_UNIT )
+                     | ( [DECIMAL_SUBMULTIPLE_PREFIX] SUBMULTIPLE_ONLY_SIMPLE_UNIT )
+                     | ( [DECIMAL_PREFIX] MULTIPLE_AND_SUBMULTIPLE_SIMPLE_UNIT )
+                     | ( [BINARY_PREFIX] ("B" | "bit"))
+                     | "AU" | "pc" | "u" |  "min" | "h" | "d" | "dB"
+!?unit_exponent : (["-"] UNSIGNED_INTEGER)
+                | ("(" ["-"] UNSIGNED_INTEGER "/" UNSIGNED_INTEGER ")")
+MULTIPLE_AND_SUBMULTIPLE_SIMPLE_UNIT : "mol" | "Sv" | "Wb" | "m" | "g" | "s" | "A" | "K" | "cd" |  "Hz" | "N"
+                                     | "Pa" | "bar" | "J" | "eV" | "W" | "C" | "V" | "F" | "Ohm" | "S"
+                                     | "T" | "H" | "lm" | "lx" | "Bq" | "Gy" | "bit"
+MULTIPLE_ONLY_SIMPLE_UNIT : "t" | "r" | "Bd" | "B"
+SUBMULTIPLE_ONLY_SIMPLE_UNIT : "L" | "degC" | "rad" | "deg" | "arcmin" | "arcsec" | "sr" | "Np"
+DECIMAL_PREFIX : DECIMAL_MULTIPLE_PREFIX
+               | DECIMAL_SUBMULTIPLE_PREFIX
+DECIMAL_MULTIPLE_PREFIX : "Y" | "Z" | "E" | "P" | "T" | "G" | "M"  | "k" | "h" | "da"
+DECIMAL_SUBMULTIPLE_PREFIX : "d" | "c" | "m" | "u" | "n" | "p" | "f" | "a" | "z" | "y"
+BINARY_PREFIX : "Ei" | "Pi" | "Ti" | "Gi" | "Mi" | "Ki"
+%import common.DIGIT
+%import common.INT -> UNSIGNED_INTEGER
